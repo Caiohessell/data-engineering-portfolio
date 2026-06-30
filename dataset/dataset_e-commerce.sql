@@ -1,4 +1,3 @@
--- ecommerce_profissional_v2.sql
 -- PostgreSQL - Dataset Brasileiro para Portfólio de Engenharia de Dados
 
 DROP TABLE IF EXISTS avaliacoes CASCADE;
@@ -135,14 +134,188 @@ ARRAY['Sorocaba','São Paulo','Campinas','Rio de Janeiro','Niterói','Belo Horiz
 ARRAY['SP','RJ','MG','PR','SC'] estados
 )d;
 
-INSERT INTO produtos(nome,preco,categoria_id,fornecedor_id)
+
+
+INSERT INTO produtos(nome, preco, categoria_id, fornecedor_id)
 SELECT
-'Produto '||g||' - '||
-(ARRAY['Premium','Plus','Pro','Max','Ultra'])[floor(random()*5)+1],
-round((50+random()*5000)::numeric,2),
-((g-1)%10)+1,
-((g-1)%50)+1
-FROM generate_series(1,300) g;
+    p.produto,
+    round(
+        CASE p.categoria_id
+            WHEN 1 THEN 300 + random()*7000      -- Eletrônicos
+            WHEN 2 THEN 200 + random()*12000     -- Informática
+            WHEN 3 THEN 500 + random()*8000      -- Celulares
+            WHEN 4 THEN 50 + random()*500        -- Moda
+            WHEN 5 THEN 20 + random()*400        -- Beleza
+            WHEN 6 THEN 80 + random()*3000       -- Casa
+            WHEN 7 THEN 20 + random()*200        -- Livros
+            WHEN 8 THEN 50 + random()*2000       -- Esportes
+            WHEN 9 THEN 100 + random()*5000      -- Games
+            ELSE 30 + random()*500               -- Brinquedos
+        END::numeric,
+        2
+    ),
+    p.categoria_id,
+    ((row_number() OVER()) % 50) + 1
+FROM (
+VALUES
+
+-- ELETRÔNICOS
+('Smart TV Samsung Crystal UHD 50"',1),
+('Smart TV LG OLED C4 55"',1),
+('Soundbar JBL Cinema',1),
+('Caixa de Som JBL Flip 6',1),
+('Alexa Echo Dot 5ª Geração',1),
+('Google Nest Mini',1),
+('Projetor Full HD Epson',1),
+('Home Theater Sony',1),
+('Smartwatch Galaxy Watch 7',1),
+('Apple Watch Series 10',1),
+('Drone DJI Mini 4K',1),
+('GoPro Hero 13',1),
+('Câmera Canon EOS R50',1),
+('Câmera Sony Alpha A6400',1),
+('Fone JBL Tune 720BT',1),
+('Headphone Sony WH-1000XM5',1),
+('AirPods Pro 2',1),
+('Kindle Paperwhite',1),
+('Tablet Samsung Galaxy Tab S9',1),
+('iPad Air M3',1),
+
+-- INFORMÁTICA
+('Notebook Dell Inspiron i7',2),
+('Notebook Lenovo Legion 5',2),
+('Notebook Acer Nitro V15',2),
+('Notebook ASUS Vivobook',2),
+('MacBook Air M3',2),
+('Monitor LG Ultrawide 29"',2),
+('Monitor Samsung Odyssey G5',2),
+('Monitor AOC Hero 24"',2),
+('Teclado Mecânico Redragon Kumara',2),
+('Teclado Logitech MX Keys',2),
+('Mouse Logitech G502',2),
+('Mouse Logitech MX Master 3S',2),
+('Mouse Razer DeathAdder',2),
+('SSD Kingston NV2 1TB',2),
+('SSD Samsung 990 Pro 2TB',2),
+('HD Externo Seagate 2TB',2),
+('Memória RAM Corsair 16GB',2),
+('Processador Ryzen 7 7800X',2),
+('Processador Intel i7 14700K',2),
+('Placa de Vídeo RTX 4070',2),
+('Placa de Vídeo RX 7800 XT',2),
+('Fonte Corsair 750W',2),
+('Gabinete Gamer NZXT',2),
+('Webcam Logitech C920',2),
+('Microfone HyperX QuadCast',2),
+
+-- CELULARES
+('Samsung Galaxy S24 Ultra 256GB',3),
+('Samsung Galaxy S24 FE',3),
+('iPhone 16 Pro 256GB',3),
+('iPhone 16 128GB',3),
+('Motorola Edge 50 Pro',3),
+('Motorola G85',3),
+('Xiaomi Redmi Note 14',3),
+('Xiaomi Poco X7',3),
+('Realme GT 6',3),
+('ASUS ROG Phone 8',3),
+
+-- MODA
+('Camiseta Básica Premium',4),
+('Camiseta Polo Masculina',4),
+('Calça Jeans Slim',4),
+('Calça Jeans Feminina',4),
+('Tênis Nike Revolution 7',4),
+('Tênis Adidas Runfalcon',4),
+('Tênis Olympikus Corre 4',4),
+('Tênis Asics Gel Nimbus',4),
+('Jaqueta Corta Vento',4),
+('Moletom Unissex',4),
+('Bolsa Feminina Couro',4),
+('Mochila Executiva',4),
+('Mochila Gamer',4),
+('Relógio Masculino Casual',4),
+('Relógio Feminino Elegance',4),
+
+-- BELEZA
+('Perfume Masculino 100ml',5),
+('Perfume Feminino 100ml',5),
+('Kit Skincare Facial',5),
+('Shampoo Profissional',5),
+('Condicionador Profissional',5),
+('Creme Hidratante',5),
+('Protetor Solar FPS 70',5),
+('Kit Maquiagem Premium',5),
+('Secador de Cabelo',5),
+('Chapinha Profissional',5),
+
+-- CASA
+('Geladeira Frost Free',6),
+('Microondas Panasonic',6),
+('Air Fryer Philips Walita',6),
+('Cafeteira Nespresso',6),
+('Cafeteira Dolce Gusto',6),
+('Aspirador Robô Smart',6),
+('Purificador de Água',6),
+('Ventilador Arno',6),
+('Ar Condicionado Inverter',6),
+('Máquina de Lavar 12kg',6),
+('Cooktop 5 Bocas',6),
+('Forno Elétrico',6),
+('Jogo de Panelas',6),
+('Conjunto de Facas',6),
+('Sofá Retrátil',6),
+
+-- LIVROS
+('Clean Code',7),
+('Engenharia de Dados',7),
+('Python para Análise de Dados',7),
+('SQL para Cientistas de Dados',7),
+('Arquitetura Limpa',7),
+('Data Warehouse Toolkit',7),
+('Storytelling com Dados',7),
+('Entendendo Algoritmos',7),
+('Domain Driven Design',7),
+('Fundamentos de Banco de Dados',7),
+
+-- ESPORTES
+('Bicicleta Mountain Bike',8),
+('Esteira Ergométrica',8),
+('Halter Emborrachado 10kg',8),
+('Bola Oficial de Futebol',8),
+('Bola Oficial de Vôlei',8),
+('Luva de Academia',8),
+('Kit Faixa Elástica',8),
+('Corda de Pular',8),
+('Colchonete Fitness',8),
+('Whey Protein 900g',8),
+('Creatina Monohidratada',8),
+
+-- GAMES
+('PlayStation 5 Slim',9),
+('Xbox Series X',9),
+('Nintendo Switch OLED',9),
+('Controle DualSense',9),
+('Controle Xbox',9),
+('Headset Gamer HyperX',9),
+('Cadeira Gamer ThunderX3',9),
+('Mesa Gamer',9),
+('Volante Logitech G29',9),
+('Placa de Captura',9),
+
+-- BRINQUEDOS
+('LEGO Star Wars',10),
+('LEGO City',10),
+('Boneca Barbie',10),
+('Carrinho Hot Wheels',10),
+('Quebra-Cabeça 1000 Peças',10),
+('Jogo de Tabuleiro',10),
+('Uno',10),
+('Banco Imobiliário',10),
+('Pelúcia Ursinho',10),
+('Pista Hot Wheels',10)
+
+) AS p(produto, categoria_id);
 
 INSERT INTO pedidos(cliente_id,funcionario_id,data_pedido,status)
 SELECT
@@ -185,19 +358,19 @@ data_pedido+((random()*7)::int)+4
 FROM pedidos
 WHERE status IN ('ENVIADO','ENTREGUE');
 
-INSERT INTO avaliacoes(cliente_id,produto_id,nota,comentario)
+INSERT INTO avaliacoes(cliente_id, produto_id, nota, comentario)
 SELECT
-(random()*999)::int+1,
-(random()*299)::int+1,
-(random()*2)::int+3,
-(ARRAY[
-'Excelente produto.','Muito satisfeito.',
-'Entrega rápida.','Ótimo custo-benefício.',
-'Produto original.','Superou expectativas.',
-'Boa qualidade.','Recomendo.',
-'Atendeu ao esperado.','Voltarei a comprar.'
-])[floor(random()*10)+1]
-FROM generate_series(1,5000);
+    (random()*999)::int+1,
+    (random()*119)::int+1, -- Ajustado de 299 para 119 (Gera IDs de 1 a 120)
+    (random()*2)::int+3,
+    (ARRAY[
+        'Excelente produto.', 'Muito satisfeito.',
+        'Entrega rápida.', 'Ótimo custo-benefício.',
+        'Produto original.', 'Superou expectativas.',
+        'Boa qualidade.', 'Recomendo.',
+        'Atendeu ao esperado.', 'Voltarei a comprar.'
+    ])[floor(random()*10)+1]
+FROM generate_series(1, 5000);
 
 CREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);
 CREATE INDEX idx_itens_produto ON itens_pedido(produto_id);
