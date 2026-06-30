@@ -1,3 +1,5 @@
+/*Neste arquivo estou realizando consultas e aplicando os conceitos de ordenação em casa uma delas buscando repsonder as perguntas de negócio*/
+
 -- O CRM quer a lista de clientes organizada em ordem alfabética e estado onde reside.
 SELECT nome, estado
 FROM clientes
