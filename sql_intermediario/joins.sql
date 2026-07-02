@@ -36,6 +36,7 @@ ON p.id = i.produto_id
 GROUP BY p.nome
 ORDER BY maior_volume DESC;
 
+
 -- Qual categoria de produto gerou maior faturamento?
 
 SELECT c.nome AS categoria,
@@ -47,3 +48,40 @@ INNER JOIN itens_pedido AS i
 ON p.id = i.produto_id
 GROUP BY c.nome
 ORDER BY maior_faturamento DESC;
+
+
+--Qual fornecedor gerou maior receita para a empresa?
+
+SELECT f.nome AS fornecedor,
+        SUM(ip.valor_unitario * ip.quantidade) AS total_fornecedor
+FROM fornecedores AS f
+INNER JOIN produtos AS p
+ON f.id = p.fornecedor_id
+INNER JOIN itens_pedido AS ip
+ON p.id = ip.produto_id
+GROUP BY f.nome
+ORDER BY total_fornecedor DESC
+LIMIT 1;
+
+
+--Quais funcionários processaram mais pedidos?
+
+SELECT f.nome AS nome_funcionario,
+        COUNT(status) AS total_processado
+FROM funcionarios AS f
+INNER JOIN pedidos AS p
+ON f.id = p.funcionario_id
+GROUP BY f.nome
+ORDER BY total_processado DESC;
+
+--Qual funcionário gerou maior faturamento em vendas?
+
+SELECT f.nome AS nome_funcionario,
+        SUM(ip.quantidade * ip.valor_unitario) AS total_vendido
+FROM funcionarios AS f
+INNER JOIN pedidos AS p
+ON f.id = p.funcionario_id
+INNER JOIN itens_pedido AS ip
+ON p.id = ip.pedido_id
+GROUP BY f.nome
+ORDER BY total_vendido DESC;
