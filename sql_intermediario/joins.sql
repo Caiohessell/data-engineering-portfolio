@@ -74,6 +74,7 @@ ON f.id = p.funcionario_id
 GROUP BY f.nome
 ORDER BY total_processado DESC;
 
+
 --Qual funcionário gerou maior faturamento em vendas?
 
 SELECT f.nome AS nome_funcionario,
@@ -85,3 +86,71 @@ INNER JOIN itens_pedido AS ip
 ON p.id = ip.pedido_id
 GROUP BY f.nome
 ORDER BY total_vendido DESC;
+
+
+--Qual forma de pagamento movimentou mais dinheiro?
+
+SELECT p.forma_pagamento AS forma_utilizada,
+        SUM(p.valor) AS total_forma
+FROM pagamentos AS p
+INNER JOIN pedidos AS pe
+ON p.pedido_id = pe.id
+WHERE pe.status = 'PAGO'
+GROUP BY forma_utilizada
+ORDER BY total_forma DESC;
+
+
+-- Quais transportadoras apresentaram menor tempo médio de entrega?
+
+SELECT e.transportadora AS nome_transportadora,
+        AVG(e.data_entrega - e.data_envio) AS tempo_medio_dias
+FROM entregas AS e
+INNER JOIN pedidos AS p
+ON e.pedido_id = p.id
+WHERE p.status = 'ENTREGUE'
+GROUP BY nome_transportadora
+ORDER BY tempo_medio_dias;
+
+
+-- Quais produtos possuem as melhores avaliações dos clientes?
+
+SELECT p.nome AS nome_produto,
+        p.preco AS valor_produto,
+         AVG(a.nota) AS nota_media         
+FROM produtos AS p
+INNER JOIN avaliacoes AS a
+ON p.id = a.produto_id 
+GROUP BY nome_produto, valor_produto
+HAVING AVG(a.nota) > 4
+ORDER BY nota_media DESC;
+
+
+-- Quais cidades geraram maior faturamento para a empresa?
+
+SELECT c.cidade AS ranking_cidades,
+        SUM(ip.quantidade * ip.valor_unitario) AS total_cidade
+FROM clientes AS c
+INNER JOIN pedidos AS p
+ON c.id = p.cliente_id
+INNER JOIN itens_pedido AS ip
+ON p.id = ip.pedido_id
+WHERE p.status = 'PAGO'
+GROUP BY c.cidade
+ORDER BY total_cidade DESC;
+
+
+-- Existem produtos cadastrados que nunca foram vendidos?
+
+SELECT  p.nome AS nome_produto
+FROM produtos AS p
+LEFT JOIN itens_pedido AS ip
+ON p.id = ip.produto_id
+WHERE produto_id IS NULL;
+
+
+
+
+
+
+
+
