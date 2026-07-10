@@ -9,6 +9,16 @@
       "name": "e-commerce",
       "database": "ecommerce_profissional",
       "username": "postgres"
+    },
+    {
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "students",
+      "database": "dataset_saude",
+      "username": "postgres"
     }
   ]
 }
