@@ -31,8 +31,21 @@ WHERE total_cliente > (
 
 -- Existem produtos que nunca foram vendidos?
 
+SELECT id, nome 
+FROM produtos AS p 
+WHERE p.id NOT IN (SELECT produto_id 
+                        FROM itens_pedido);
 
 
+-- Quais fornecedores possuem pelo menos um produto que nunca foi vendido?
 
- 
-
+SELECT id, nome
+FROM fornecedores AS f
+WHERE f.id IN (
+                SELECT p.fornecedor_id
+                        FROM produtos AS p
+                WHERE p.id NOT IN (
+                SELECT produto_id
+                        FROM itens_pedido
+    )
+);
