@@ -49,3 +49,50 @@ WHERE f.id IN (
                         FROM itens_pedido
     )
 );
+
+
+-- Quais clientes realizaram pedidos cujo valor foi superior ao maior pedido da cidade de Sorocaba?
+
+
+SELECT ip.pedido_id AS pedido, c.nome AS nome, SUM(ip.quantidade * ip.valor_unitario) total_geral
+FROM itens_pedido AS ip
+INNER JOIN pedidos AS p
+        ON ip.pedido_id = p.id
+INNER JOIN clientes AS c
+        ON c.id = p.cliente_id
+WHERE p.status = 'PAGO'
+GROUP BY c.id, ip.pedido_id
+HAVING SUM(ip.quantidade * ip.valor_unitario) > (
+                                                SELECT SUM(ip.quantidade * ip.valor_unitario) AS maior
+                                                FROM itens_pedido AS ip
+                                                INNER JOIN pedidos AS p
+                                                        ON p.id = ip. pedido_id
+                                                INNER JOIN clientes AS c
+                                                        ON c.id = p.cliente_id
+                                                WHERE c.cidade = 'Sorocaba' AND P.status = 'PAGO'
+                                                GROUP BY ip.pedido_id
+                                                ORDER BY maior DESC
+                                                LIMIT 1
+                                                )
+ORDER BY total_geral DESC;
+
+
+-- Quais produtos possuem preço acima da média da própria categoria?
+
+SELECT p.nome AS produto, p.preco AS preco, ct.nome AS categoria
+FROM produtos AS p
+INNER JOIN categorias AS ct
+ON ct.id = p.categoria_id
+GROUP BY p.nome, p.preco, p.categoria_id, ct.nome
+HAVING p.preco > (
+                 SELECT AVG(preco)
+                 FROM produtos AS p2
+                 INNER JOIN categorias AS ct2
+                        ON ct2.id = p2.categoria_id
+                 WHERE p2.categoria_id = p.categoria_id
+)
+ORDER BY p.preco DESC;
+
+
+--Quais funcionários venderam pelo menos um pedido acima da média dos pedidos?
+
