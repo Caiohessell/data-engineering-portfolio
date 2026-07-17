@@ -53,7 +53,6 @@ WHERE f.id IN (
 
 -- Quais clientes realizaram pedidos cujo valor foi superior ao maior pedido da cidade de Sorocaba?
 
-
 SELECT ip.pedido_id AS pedido, c.nome AS nome, SUM(ip.quantidade * ip.valor_unitario) total_geral
 FROM itens_pedido AS ip
 INNER JOIN pedidos AS p
@@ -95,4 +94,27 @@ ORDER BY p.preco DESC;
 
 
 --Quais funcionários venderam pelo menos um pedido acima da média dos pedidos?
+
+SELECT 
+    fn.nome, fn.cargo
+FROM funcionarios AS fn
+INNER JOIN pedidos AS p
+    ON fn.id = p.funcionario_id
+INNER JOIN (
+        SELECT ip.pedido_id, SUM(ip.quantidade * ip.valor_unitario) AS total_pedido
+        FROM itens_pedido AS ip
+        GROUP BY ip.pedido_id
+) AS total
+    ON p.id = total.pedido_id
+WHERE total.total_pedido > (
+        SELECT AVG(total_pedido)
+        FROM (
+                SELECT ip2.pedido_id, SUM(ip2.quantidade * ip2.valor_unitario) AS total_pedido
+                FROM itens_pedido AS ip2
+                GROUP BY ip2.pedido_id
+        ) AS media_pedidos
+);
+
+ 
+
 
