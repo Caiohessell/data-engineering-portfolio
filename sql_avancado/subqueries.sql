@@ -95,8 +95,7 @@ ORDER BY p.preco DESC;
 
 --Quais funcionários venderam pelo menos um pedido acima da média dos pedidos?
 
-SELECT 
-    fn.nome, fn.cargo
+SELECT DISTINCT(fn.nome) AS nome, fn.cargo AS cargo
 FROM funcionarios AS fn
 INNER JOIN pedidos AS p
     ON fn.id = p.funcionario_id
@@ -114,7 +113,37 @@ WHERE total.total_pedido > (
                 GROUP BY ip2.pedido_id
         ) AS media_pedidos
 );
-
  
+-- Quais clientes nunca avaliaram nenhum produto?
+
+SELECT c.nome AS cliente
+FROM clientes AS c
+WHERE c.id NOT IN (
+        SELECT cliente_id
+        FROM avaliacoes
+);
+
+-- Quais produtos possuem avaliação inferior à média geral das avaliações?
+
+SELECT p.nome, ROUND(AVG(av.nota), 2) AS media
+FROM produtos AS p
+INNER JOIN avaliacoes AS av
+        ON p.id = av.produto_id
+GROUP BY p.nome
+HAVING (SELECT AVG(nota)
+        FROM avaliacoes
+) > AVG(av.nota)
+
+
+-- Quais categorias possuem mais produtos do que a média de produtos por categoria?
+
+
+-- Quais pedidos possuem valor superior ao valor médio dos pedidos pagos via PIX?
+
+
+-- Existem clientes que compraram produtos de todas as categorias?
+
+
+-- Quais cidades possuem clientes cujo gasto total é maior que o gasto médio das demais cidades?
 
 
