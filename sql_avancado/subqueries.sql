@@ -137,13 +137,80 @@ HAVING (SELECT AVG(nota)
 
 -- Quais categorias possuem mais produtos do que a média de produtos por categoria?
 
+SELECT ct.nome, COUNT(p.nome) AS contagem_total
+FROM produtos AS p
+INNER JOIN categorias AS ct
+        ON ct.id = p.categoria_id
+GROUP BY ct.nome
+HAVING COUNT(p.nome) > (
+        SELECT AVG(tbl_contagem.contagem)
+        FROM (
+                SELECT COUNT(*) AS contagem
+                FROM produtos
+                GROUP BY produtos.categoria_id
+        ) AS tbl_contagem
+)
+ORDER BY contagem_total DESC;
+
 
 -- Quais pedidos possuem valor superior ao valor médio dos pedidos pagos via PIX?
+
+SELECT p.id AS pedido, SUM(ip.quantidade * ip.valor_unitario) AS total_pedido
+FROM pedidos AS p
+INNER JOIN itens_pedido AS ip
+        ON p.id = ip.pedido_id
+GROUP BY p.id
+HAVING SUM(ip.quantidade * ip.valor_unitario) > (
+        SELECT AVG(tbl_soma.soma_pedido)
+        FROM (
+                SELECT SUM(ip1.quantidade * ip1.valor_unitario) AS soma_pedido
+                FROM itens_pedido AS ip1
+                INNER JOIN pagamentos AS pg1
+                        ON ip1.pedido_id = pg1.pedido_id
+                WHERE pg1.forma_pagamento = 'PIX'
+                GROUP BY ip1.pedido_id
+        ) AS tbl_soma
+)
+ORDER BY total_pedido DESC;
 
 
 -- Existem clientes que compraram produtos de todas as categorias?
 
+SELECT cl.nome AS cliente, COUNT(DISTINCT(ct.id)) AS contagem
+FROM clientes AS cl
+INNER JOIN pedidos AS p
+        ON cl.id = p.cliente_id
+INNER JOIN itens_pedido AS ip
+        ON ip.pedido_id = p.id
+INNER JOIN produtos AS pr
+        ON pr.id = ip.produto_id
+INNER JOIN categorias AS ct
+        ON ct.id = pr.categoria_id
+GROUP BY cl.nome
+HAVING COUNT(DISTINCT(ct.id)) = (
+        SELECT COUNT(id)
+        FROM categorias
+)
+
 
 -- Quais cidades possuem clientes cujo gasto total é maior que o gasto médio das demais cidades?
 
-
+SELECT cl.cidade AS cidade
+FROM clientes AS cl
+INNER JOIN pedidos AS pd
+ON pd.cliente_id = cl.id
+INNER JOIN itens_pedido AS ip
+ON ip.pedido_id = pd.id
+GROUP BY cl.cidade
+HAVING SUM(ip.quantidade * ip.valor_unitario) > (
+        SELECT AVG(tbl_soma.soma_pedido)
+        FROM (
+                SELECT SUM(ip1.quantidade * ip1.valor_unitario) AS soma_pedido
+                FROM itens_pedido AS ip1
+                INNER JOIN pedidos AS pd1
+                        ON pd1.id = ip1.pedido_id
+                INNER JOIN clientes AS cl1
+                        ON cl1.id = pd1.cliente_id
+                GROUP BY cl1.cidade                                
+        ) AS tbl_soma
+)
