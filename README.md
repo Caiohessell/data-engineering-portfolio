@@ -1,15 +1,61 @@
-# 📊 Data Engineering Portfolio
+# Caio Oliveira | Data Analyst Portfolio
 
-Portfólio de estudos em SQL e Engenharia de Dados utilizando banco de dados de e-commerce.
+Olá! Sou estudante de Análise e Desenvolvimento de Sistemas com foco em
+Análise de Dados e Engenharia de Dados.
 
-## 📚 Estrutura
+Este repositório reúne meus estudos, projetos e análises utilizando SQL,
+Python e ferramentas de dados.
 
-- sql_basico → fundamentos SQL
-- sql_intermediario → agregações e joins
-- sql_avancado → subqueries e CTEs
-- projeto_ecommerce → análises reais de negócio
-- dataset → banco de dados utilizado
+---
 
-## 🎯 Objetivo
+## Tecnologias
 
-Desenvolver habilidades em SQL e análise de dados para atuar como Analista de Dados / Engenheiro de Dados Jr.
+🗄️ SQL / PostgreSQL  
+🐍 Python  
+📊 Pandas  
+📈 Power BI  
+🔧 Git/GitHub
+
+---
+
+# Projetos
+
+## 📊 Ecommerce Analysis
+
+Análise de dados de um ambiente de comércio eletrônico utilizando SQL.
+
+Principais análises:
+
+- comportamento dos clientes
+- produtos mais vendidos
+- faturamento
+- pagamentos
+- logística
+
+## 🧠 Student Mental Health Analysis
+
+Análise exploratória sobre fatores relacionados à saúde mental de estudantes.
+
+Etapas:
+
+- limpeza dos dados
+- tratamento de valores nulos
+- análise estatística
+- geração de insights
+
+---
+
+# Estudos
+
+## SQL
+
+Conteúdos praticados:
+
+- SELECT
+- WHERE
+- JOIN
+- GROUP BY
+- HAVING
+- Subqueries
+- CTEs
+- Window Functions
