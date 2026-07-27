@@ -74,6 +74,37 @@ GROUP BY japanese_cate
 ORDER BY japanese_cate;
 
 
+-- Como está distribuído o domínio da língua inglesa?
+
+SELECT english_cate AS nivel_lingua, 
+        COUNT(*) AS total,
+        ROUND(
+        COUNT(*) * 100.0 / (
+            SELECT COUNT(*)
+            FROM students
+            WHERE english_cate IS NOT NULL
+        ),
+        2
+    ) AS percentual
+FROM students
+WHERE english_cate IS NOT NULL
+GROUP BY english_cate
+ORDER BY english_cate;
 
 
+-- Como está distribuída a conexão social?
 
+SELECT tosc AS nivel_conexao, 
+        COUNT(*) AS total,
+        ROUND(
+        COUNT(*) * 100.0 / (
+            SELECT COUNT(*)
+            FROM students
+            WHERE tosc IS NOT NULL
+        ),
+        2
+    ) AS percentual
+FROM students
+WHERE tosc IS NOT NULL
+GROUP BY tosc
+ORDER BY tosc DESC;
