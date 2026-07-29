@@ -108,3 +108,33 @@ FROM students
 WHERE tosc IS NOT NULL
 GROUP BY tosc
 ORDER BY tosc DESC;
+
+
+-- Qual o mínimo e o máximo de pontos nos testes de nível de depressão?
+
+SELECT MIN(todep) AS min_teste, MAX(todep) AS max_teste
+FROM students
+WHERE todep IS NOT NULL;
+
+-- Qual a média de pontos no teste de nível de depressão no conjunto?
+
+SELECT ROUND(AVG(todep)) AS media_depressao 
+FROM students
+WHERE todep IS NOT NULL;
+
+
+-- Qual o mínimo e o máximo de pontos no teste de nível de stress?
+
+SELECT MIN(toas) AS min_teste, MAX(toas) AS max_teste
+FROM students
+WHERE toas IS NOT NULL;
+
+
+-- Qual a média de pontos no teste de nível de stress?
+
+SELECT AVG(toas) AS media_pts
+FROM students
+WHERE toas IS NOT NULL;
+
+
+

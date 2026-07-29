@@ -50,3 +50,11 @@ FROM students
 WHERE age IS NOT NULL
 GROUP BY age
 ORDER BY age;
+
+
+-- Qual a pontuação mínima e máxima dos níveis de depressão?
+
+SELECT MIN(todep) AS min_pts, MAX(TODEP) AS max_pts
+FROM students
+WHERE todep IS NOT NULL;
+
