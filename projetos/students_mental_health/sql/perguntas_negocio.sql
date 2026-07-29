@@ -31,6 +31,7 @@ GROUP BY inter_dom;
 -- Na saída do cógido verificou-se que do total de 268 estudantes temos 75% internacionais e 25% locais.
 
 
+
 /*
 Estudantes internacionais apresentam maior média de depressão?
 
@@ -51,8 +52,9 @@ ORDER BY media_depressao DESC;
 Apesar de apresentar uma média maior no grupo doméstico, deve-se levar em consideração a quantidade de amostras por grupo,
 pois no grupo doméstico temos uma quantidade menor de amostras comparadas ao grupo internacional e isso faz com que a 
 média se comporte de maneira mais sensível em grupos de tamanho reduzido. Por fim isso não quer dizer que essa diferença
-seja substancial entre os grupos
+seja substancial entre os grupos.
 */
+
 
 
 /*
@@ -81,9 +83,70 @@ ORDER BY media_depressao DESC;
 /*
 Observando a saída concluo que o maior índice de depressão ocorre entre os 2-3 anos de permanência, isso pode envolver
 várias questões como nível de conexão com a cultura, dificuldade com a língua falada dentre outros fatores. Portanto
-devido a densidade de amostras estar parecida, podemos concluir que o primeiro ano não possuí o maior nível de posntuação
+devido a densidade de amostras estar parecida, podemos concluir que o primeiro ano não possuí o maior nível de pontuação
 nos testes de depressão.
 */
+
+
+
+/*
+O domínio da língua japonesa influencia a depressão?
+
+Objetivo
+
+Investigar se dificuldades de comunicação podem estar associadas ao aumento da depressão.
+*/
+
+SELECT japanese_cate AS nivel_lingua,
+        COUNT(*) AS total_estudantes,
+        ROUND(AVG(todep), 2) AS media_depressao
+FROM students
+WHERE inter_dom = 'Inter'
+    AND japanese_cate IS NOT NULL
+GROUP BY japanese_cate
+ORDER BY media_depressao;
+
+/*
+Observando a saída de dados é possível dizer que um maior nível de proeficiência na língua pode reduzir a pontuação de depressão,
+porém como as amostras estão concentradas em 2 grupos outros fatores devem ser levados em consideração, por exemplo, a pressão 
+acadêmica que os estudantes podem sofrer com durante sua estadia, o tempo de estadia tamém pode ser considerado um fator relevante 
+no aumento do nível de proeficiência. Por fim podemos dizer que um maior fluência auxilia a diminuir a pontuação de depressão, porém 
+devemos nos atentar a outros fatores também.
+*/
+
+
+
+/*
+Existe relação entre conexão social e depressão?
+
+Objetivo
+
+Avaliar se estudantes menos conectados socialmente apresentam maiores índices de depressão.
+*/
+
+SELECT
+    CASE
+        WHEN tosc BETWEEN 10 AND 20 THEN '10-20'
+        WHEN tosc BETWEEN 21 AND 30 THEN '21-30'
+        WHEN tosc BETWEEN 31 AND 40 THEN '31-40'
+        WHEN tosc BETWEEN 41 AND 50 THEN '41-50'
+        ELSE 'Fora das faixas'
+    END AS nivel_conexao,
+        COUNT(*) AS total_estudantes,
+        ROUND(AVG(todep), 2) AS media_depressao
+FROM students
+WHERE inter_dom = 'Inter'
+    AND tosc IS NOT NULL
+GROUP BY nivel_conexao
+ORDER BY nivel_conexao DESC;
+
+/*
+Aqui podemos observar uma tendência de queda na média de pontos de depressão a medida que o nível de conexão sobe, porém
+ainda é preciso realizar uma análise mais profunda comparando mais elementos para que seja evidenciado os reais motivos 
+que contribuem para um nível de depressão alto.
+*/
+
+
 
 
 
