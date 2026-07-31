@@ -110,7 +110,7 @@ ORDER BY media_depressao;
 Observando a saída de dados é possível dizer que um maior nível de proeficiência na língua pode reduzir a pontuação de depressão,
 porém como as amostras estão concentradas em 2 grupos outros fatores devem ser levados em consideração, por exemplo, a pressão 
 acadêmica que os estudantes podem sofrer com durante sua estadia, o tempo de estadia tamém pode ser considerado um fator relevante 
-no aumento do nível de proeficiência. Por fim podemos dizer que um maior fluência auxilia a diminuir a pontuação de depressão, porém 
+no aumento do nível de proeficiência. Por fim podemos dizer que uma maior fluência auxilia a diminuir a pontuação de depressão, porém 
 devemos nos atentar a outros fatores também.
 */
 
@@ -148,5 +148,109 @@ que contribuem para um nível de depressão alto.
 
 
 
+/*
+Qual grupo apresenta níveis de depressão acima da média geral?
+
+Objetivo
+
+Aplicar subqueries para identificar grupos mais vulneráveis.
+*/
+
+SELECT 
+    inter_dom AS tipo_estudante,
+    COUNT(*) AS total_grupo,
+    ROUND(AVG(todep), 2) AS media_grupo,
+    COUNT(CASE WHEN todep > (SELECT AVG(todep) FROM students) THEN 1 END) AS total_acima,
+    ROUND(
+        COUNT(CASE WHEN todep > (SELECT AVG(todep) FROM students) THEN 1 END) * 100.0 / COUNT(*), 2
+    ) AS percentual_medio
+FROM students
+WHERE inter_dom IS NOT NULL
+GROUP BY inter_dom;
+
+/*
+Avaliando a querie resultante observa-se que apesar de o grupo internacional ter uma quantidade maior de amostras o grupo que possuí um maior 
+percentual médio em depressão é o doméstico com 53.73% contra 44.28% do grupo internacional.
+*/
 
 
+
+/*
+Qual faixa etária apresenta maior média de depressão?
+
+Objetivo
+
+Identificar diferenças relacionadas à idade.
+*/
+
+SELECT 
+        CASE 
+            WHEN age BETWEEN 17 AND 21 THEN 'Entre 17-21'
+            WHEN age BETWEEN 22 AND 26 THEN 'Entre 22-26'
+            WHEN age BETWEEN 27 AND 31 THEN 'Entre 27-31'
+            ELSE 'Acima de 31'
+        END AS faixa_etaria,
+        COUNT(*) AS total_faixa,
+        ROUND(AVG(todep), 2) AS media_faixa,
+        ROUND(
+        COUNT(age) * 100.0 / (
+            SELECT COUNT(age)
+            FROM students
+            WHERE age IS NOT NULL
+        ),
+        2
+    ) AS percentual
+FROM students
+WHERE age IS NOT NULL
+GROUP BY faixa_etaria
+ORDER BY media_faixa DESC;
+
+/*
+Após observar o resultado obtiddo a faixa etária mais propensa a ter um maior nível de depressão em média está entre 17-21 anos. 
+*/
+
+
+
+/*
+Qual combinação de fatores representa o grupo de maior risco?
+
+Objetivo
+
+identificar o perfil com maior média de depressão.
+*/
+
+SELECT stay AS tempo_estadia,
+       japanese_cate AS nivel_lingua,
+       COUNT(*) AS total_estudantes,
+       ROUND(AVG(tosc), 2) AS media_conexao,
+       ROUND(AVG(todep), 2) AS media_depressao,
+       ROUND(
+        COUNT(stay) * 100 / (
+                SELECT COUNT(stay)
+                FROM students
+                WHERE stay IS NOT NULL
+                ),2
+       ) AS percentual
+FROM students
+WHERE stay IS NOT NULL
+GROUP BY stay, japanese_cate
+HAVING AVG(todep) > (
+        SELECT AVG(todep) 
+        FROM students)
+        AND COUNT(*) > 5
+ORDER BY stay DESC;
+
+/*
+Cruzando as variáveis de tempo de estadia com o nível de proeficiência em Japonês, verificou-se que a maior média de depressão se dá 
+no grupo com estadia de 3 anos com o nível linguístico médio.
+*/
+
+
+
+/*
+CONCLUSÃO
+
+A análise combinada de tempo de permanência e proficiência no idioma revelou médias de depressão homogêneas entre os grupos filtrados (variação mínima entre as médias). 
+Isso sugere uma distribuição uniforme do risco psicológico dentro dessas categorias, recomendando-se a investigação de variáveis comportamentais (como o score de conexão social isolado) p
+ara identificar um fator de segregação mais acentuado.
+*/
